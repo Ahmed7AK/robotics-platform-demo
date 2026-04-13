@@ -1,0 +1,8 @@
+{
+  "name": "robotics-platform",
+  "private": true,
+  "description": "Monorepo root for Vercel — frontend + API builds are defined in vercel.json",
+  "scripts": {
+    "build": "npm --prefix frontend run build"
+  }
+}
