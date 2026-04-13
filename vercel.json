@@ -16,10 +16,11 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/backend/api/index.js"
+      "dest": "backend/api/index.js"
     },
     {
-      "handle": "filesystem"
+      "src": "/(.*)",
+      "dest": "/frontend/dist/$1"
     },
     {
       "src": "/(.*)",
