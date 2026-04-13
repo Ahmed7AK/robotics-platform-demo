@@ -1,8 +1,10 @@
 import { useAuth } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { Bell } from 'lucide-react';
 
 export const Header = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   
   if (!user) return null;
 
@@ -56,7 +58,11 @@ export const Header = () => {
 
       {/* Right side */}
       <div className="flex items-center gap-4">
-        <button className="text-[var(--color-text-muted)] hover:text-white transition-colors p-2 relative">
+        <button
+          onClick={() => navigate('/events')}
+          title="View events"
+          className="text-[var(--color-text-muted)] hover:text-white transition-colors p-2 relative"
+        >
           <Bell size={20} />
           {/* Notification dot */}
           <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[var(--color-primary)] rounded-full border border-[var(--color-dark)]"></span>

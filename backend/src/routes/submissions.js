@@ -3,6 +3,46 @@ const router = express.Router();
 const db = require('../db');
 const { requireAuth } = require('../middleware/auth');
 
+// GET /api/v1/submissions/available-evaluations
+router.get('/available-evaluations', requireAuth, async (req, res) => {
+  try {
+    const { rows } = await db.query(
+      `SELECT
+        s.id,
+        s.team_id,
+        s.project_id,
+        s.submitted_at,
+        s.status,
+        s.notes,
+        t.name AS team_name,
+        p.title AS project_title,
+        p.rank_required
+      FROM submissions s
+      JOIN teams t ON t.id = s.team_id
+      JOIN projects p ON p.id = s.project_id
+      WHERE s.status IN ('pending', 'failed', 'passed')
+        AND NOT EXISTS (
+          SELECT 1
+          FROM team_members tm
+          WHERE tm.team_id = s.team_id
+            AND tm.user_id = $1
+        )
+        AND NOT EXISTS (
+          SELECT 1
+          FROM evaluations e
+          WHERE e.submission_id = s.id
+            AND e.evaluator_id = $1
+        )
+      ORDER BY s.submitted_at DESC`,
+      [req.user.id]
+    );
+
+    res.json(rows);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // POST /api/v1/submissions
 router.post('/', requireAuth, async (req, res) => {
   const { team_id, project_id, notes } = req.body;
@@ -39,6 +79,9 @@ router.post('/', requireAuth, async (req, res) => {
 // GET /api/v1/submissions/:id
 router.get('/:id', requireAuth, async (req, res) => {
   try {
+    if (!/^\d+$/.test(req.params.id)) {
+      return res.status(404).json({ error: 'Submission not found' });
+    }
     const { rows } = await db.query('SELECT * FROM submissions WHERE id = $1', [req.params.id]);
     if (rows.length === 0) return res.status(404).json({ error: 'Submission not found' });
     res.json(rows[0]);
@@ -65,7 +108,7 @@ router.post('/evaluations', requireAuth, async (req, res) => {
     }
 
     const submission = submissionRes.rows[0];
-    if (!['pending', 'failed'].includes(submission.status)) {
+    if (!['pending', 'failed', 'passed'].includes(submission.status)) {
       await db.query('ROLLBACK');
       return res.status(400).json({ error: 'This submission can no longer be evaluated' });
     }

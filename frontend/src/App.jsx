@@ -9,6 +9,8 @@ import { Showcase } from './pages/Showcase';
 import { Requests } from './pages/Requests';
 import { Admin } from './pages/Admin';
 import { ProjectDetails } from './pages/ProjectDetails';
+import { Evaluations } from './pages/Evaluations';
+import { Events } from './pages/Events';
 import { useAuth } from './context/AuthContext';
 
 // Placeholders for routes
@@ -37,7 +39,9 @@ function App() {
         <Route path="/cursus" element={<Cursus />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/showcase" element={<Showcase />} />
+        <Route path="/evaluations" element={<Evaluations />} />
         <Route path="/requests" element={<Requests />} />
+        <Route path="/events" element={<Events />} />
         <Route path="/teams/:id" element={<ProjectDetails />} />
         
         {/* Admin only route */}

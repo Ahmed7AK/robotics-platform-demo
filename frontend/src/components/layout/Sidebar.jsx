@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { Home, Map, User, LayoutGrid, Package, ShieldCheck, LogOut } from 'lucide-react';
+import { Home, Map, User, LayoutGrid, Package, ClipboardCheck, ShieldCheck, LogOut } from 'lucide-react';
 
 export const Sidebar = () => {
   const { user, logout } = useAuth();
@@ -10,6 +10,7 @@ export const Sidebar = () => {
     { to: '/cursus', icon: Map, label: 'Cursus' },
     { to: '/profile', icon: User, label: 'Profile' },
     { to: '/showcase', icon: LayoutGrid, label: 'Showcase' },
+    { to: '/evaluations', icon: ClipboardCheck, label: 'Evaluations' },
     { to: '/requests', icon: Package, label: 'Requests' },
   ];
 
